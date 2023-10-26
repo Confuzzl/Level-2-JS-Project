@@ -1,10 +1,22 @@
+const imageLookup = [
+    "cat_0",
+    "cat_1",
+    "cat_2",
+    "cat_3",
+    "food_0",
+    "food_1",
+    "food_2",
+    "food_3",
+];
+
 class Card {
     constructor(element) {
         this.element = element;
         this.match = undefined;
     }
 
-    static createPair(name) {
+    static createPair(index) {
+        let name = String.fromCharCode(65 + index);
         let pair = [];
         for (let j = 0; j < 2; j++) {
             let card = new Card(document.createElement("div"));
@@ -18,8 +30,16 @@ class Card {
 
             let face = document.createElement("div");
             face.classList = "card_face";
+            let faceImage = document.createElement("img");
+            faceImage.src = "assets/card_face.png";
+            faceImage.setAttribute("draggable", "false");
+            face.appendChild(faceImage);
             let back = document.createElement("div");
             back.classList = "card_back";
+            let backImage = document.createElement("img");
+            backImage.src = `assets/${imageLookup[index]}.png`;
+            backImage.setAttribute("draggable", "false");
+            back.appendChild(backImage);
             cardContent.appendChild(face);
             cardContent.appendChild(back);
             cardDiv.appendChild(cardContent);
@@ -45,7 +65,7 @@ let currentIndex;
 function init() {
     cards = [];
     for (let i = 0; i < 8; i++) {
-        for (const card of Card.createPair(String.fromCharCode(65 + i))) {
+        for (const card of Card.createPair(i)) {
             cards.push(card);
         }
     }
@@ -97,10 +117,10 @@ function populateDisplay() {
         const cardDiv = card.element;
         cardDiv.getElementsByClassName(
             "card_face"
-        )[0].innerHTML = `${cardDiv.id} FACE`;
+        )[0].id = `${cardDiv.id} FACE`;
         cardDiv.getElementsByClassName(
             "card_back"
-        )[0].innerHTML = `${cardDiv.id} BACK`;
+        )[0].id = `${cardDiv.id} BACK`;
         cardDisplay.appendChild(cardDiv);
     }
 }
