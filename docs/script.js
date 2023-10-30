@@ -24,7 +24,8 @@ class Card {
             cardDiv.classList = "card_item";
             cardDiv.id = `${name}${j}`;
             setCardClick(card, true);
-            cardDiv.toggleAttribute("down");
+            // cardDiv.toggleAttribute("down");
+            cardDiv.toggleAttribute("up");
             let cardContent = document.createElement("div");
             cardContent.classList = "card_content";
 
@@ -58,11 +59,20 @@ function shuffle() {
     }
 }
 
+const scoreDisplay = document.getElementById("score_display");
+const scoreHeader = document.getElementById("score_header");
+const scoreCounter = document.getElementById("score_counter");
+let score;
+
+const buttonDisplay = document.getElementById("button_display");
+
 let cards;
-let cardDisplay;
+const cardDisplay = document.getElementById("card_display");
 let selected;
 let currentIndex;
 function init() {
+    score = 0;
+
     cards = [];
     for (let i = 0; i < 8; i++) {
         for (const card of Card.createPair(i)) {
@@ -70,9 +80,7 @@ function init() {
         }
     }
     shuffle();
-
-    cardDisplay = document.getElementById("card_display");
-    populateDisplay();
+    populateMain();
 
     selected = [null, null];
     currentIndex = 0;
@@ -108,10 +116,14 @@ function setCardClick(card, bool) {
     }
 }
 
-function disableCard(card) {
-    let cardDiv = card.element;
+function populateMain() {
+    displayScore(0);
+    populateDisplay();
+    populateButtons();
 }
-
+function displayScore(score) {
+    scoreCounter.innerHTML = `${score} PTS`;
+}
 function populateDisplay() {
     for (const card of cards) {
         const cardDiv = card.element;
@@ -124,8 +136,11 @@ function populateDisplay() {
         cardDisplay.appendChild(cardDiv);
     }
 }
+function populateButtons() {}
 
 function selectCard(card) {
+    displayScore(++score);
+
     if (selected[currentIndex] === null) selected[currentIndex] = card;
 
     flipCard(card);

@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matching Game</title>
-    <script src="script.js" defer></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body onload="init()">
-    <main>
-        <div id="card_display"></div>
-    </main>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Matching Game</title>
+        <script src="script.js" defer></script>
+        <link rel="stylesheet" href="style.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Itim&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body onload="init()">
+        <main>
+            <div id="score_display">
+                <div id="score_header">SCORE</div>
+                <div id="score_counter"></div>
+            </div>
+            <div id="card_display"></div>
+            <div id="button_display"></div>
+        </main>
+    </body>
 </html>

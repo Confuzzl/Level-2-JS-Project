@@ -8,7 +8,41 @@ main {
     justify-content: center;
     width: 100vw;
     height: 100vh;
-    transform: scale(0.95);
+    font-family: "Itim", cursive;
+    background-color: mistyrose;
+}
+#score_display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#score_header {
+    font-size: 10vmin;
+}
+#score_counter {
+    font-size: 5vmin;
+}
+@media (max-aspect-ratio: 1) {
+    main,
+    #score_display {
+        flex-direction: column;
+    }
+    #score_header,
+    #score_counter {
+        writing-mode: sideways-lr;
+    }
+}
+
+@media (min-aspect-ratio: 1) {
+    main,
+    #score_display {
+        flex-direction: row;
+    }
+    #score_header,
+    #score_counter {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+    }
 }
 
 #card_display {
@@ -19,6 +53,7 @@ main {
     width: 100vmin;
     height: 100vmin;
     position: relative;
+    transform: scale(0.95);
 }
 
 .card_item {
@@ -54,23 +89,19 @@ main {
     height: 100%;
     backface-visibility: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /* align-items: center; */
+    /* justify-content: center; */
     border-radius: 1vmin;
     overflow: hidden;
 }
 
-.card_face>img {
+.card_face > img {
     width: 100%;
     height: 100%;
 }
 
-.card_item[animated]>.card_content {
+.card_item[animated] > .card_content {
     box-shadow: 0 0 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
-}
-
-.card_face {
-    /* background-color: red; */
 }
 
 .card_back {
@@ -80,6 +111,10 @@ main {
     transform: rotateY(180deg);
 }
 
-.card_item[up]>.card_content {
+.card_back > img {
+    transform: scale(0.75);
+}
+
+.card_item[up] > .card_content {
     transform: rotateY(180deg);
 }
