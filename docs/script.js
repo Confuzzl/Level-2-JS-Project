@@ -65,6 +65,8 @@ const scoreCounter = document.getElementById("score_counter");
 let score;
 
 const buttonDisplay = document.getElementById("button_display");
+const playWrapper = document.getElementById("play_wrapper");
+const intermission = document.getElementById("intermission");
 const resetWrapper = document.getElementById("reset_wrapper");
 
 let cards;
@@ -82,18 +84,17 @@ function init() {
     for (let i = 0; i < 8; i++) {
         for (const card of Card.createPair(i)) {
             cards.push(card);
-            flipCard(card);
         }
     }
-    setTimeout(() => {
-        for (const card of cards) {
-            flipCard(card);
-        }
-        activateResetButton();
-    }, viewTime);
 
     shuffle();
     populateMain();
+
+    playWrapper.style = "";
+    playWrapper.onclick = start;
+    intermission.style = "display:none";
+    resetWrapper.style = "display:none";
+    resetWrapper.onclick = "";
 
     selected = [null, null];
     currentIndex = 0;
@@ -133,7 +134,6 @@ function populateMain() {
     cardDisplay.innerHTML = "";
     displayScore(0);
     populateDisplay();
-    resetWrapper.onclick = "";
 }
 function displayScore(score) {
     scoreCounter.innerHTML = `${score} PTS`;
@@ -151,8 +151,25 @@ function populateDisplay() {
     }
 }
 
-function activateResetButton() {
-    resetWrapper.onclick = reset;
+function start() {
+    playWrapper.style = "display:none";
+    intermission.style = "";
+    for (const card of cards) {
+        flipCard(card);
+    }
+    setTimeout(() => {
+        for (const card of cards) {
+            flipCard(card);
+        }
+        setTimeout(() => {
+            resetWrapper.style = "";
+            resetWrapper.onclick = reset;
+            intermission.style = "display:none";
+            cards.forEach((card) => {
+                setCardClick(card, true);
+            });
+        }, 1000);
+    }, viewTime + 1000);
 }
 
 function reset() {
@@ -160,6 +177,7 @@ function reset() {
 
     setTimeout(() => {
         resetWrapper.toggleAttribute("animated");
+        // for (const card of cards) {}
         init();
     }, 500);
 }
