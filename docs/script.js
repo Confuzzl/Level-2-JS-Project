@@ -24,8 +24,8 @@ class Card {
             cardDiv.classList = "card_item";
             cardDiv.id = `${name}${j}`;
             setCardClick(card, true);
-            // cardDiv.toggleAttribute("down");
-            cardDiv.toggleAttribute("up");
+            cardDiv.toggleAttribute("down");
+            // cardDiv.toggleAttribute("up");
             let cardContent = document.createElement("div");
             cardContent.classList = "card_content";
 
@@ -65,20 +65,33 @@ const scoreCounter = document.getElementById("score_counter");
 let score;
 
 const buttonDisplay = document.getElementById("button_display");
+const resetWrapper = document.getElementById("reset_wrapper");
 
 let cards;
 const cardDisplay = document.getElementById("card_display");
 let selected;
 let currentIndex;
+
+const viewTime = 1000;
+
 function init() {
+    console.log("init");
     score = 0;
 
     cards = [];
     for (let i = 0; i < 8; i++) {
         for (const card of Card.createPair(i)) {
             cards.push(card);
+            flipCard(card);
         }
     }
+    setTimeout(() => {
+        for (const card of cards) {
+            flipCard(card);
+        }
+        activateResetButton();
+    }, viewTime);
+
     shuffle();
     populateMain();
 
@@ -117,9 +130,10 @@ function setCardClick(card, bool) {
 }
 
 function populateMain() {
+    cardDisplay.innerHTML = "";
     displayScore(0);
     populateDisplay();
-    populateButtons();
+    resetWrapper.onclick = "";
 }
 function displayScore(score) {
     scoreCounter.innerHTML = `${score} PTS`;
@@ -136,7 +150,19 @@ function populateDisplay() {
         cardDisplay.appendChild(cardDiv);
     }
 }
-function populateButtons() {}
+
+function activateResetButton() {
+    resetWrapper.onclick = reset;
+}
+
+function reset() {
+    resetWrapper.toggleAttribute("animated");
+
+    setTimeout(() => {
+        resetWrapper.toggleAttribute("animated");
+        init();
+    }, 500);
+}
 
 function selectCard(card) {
     displayScore(++score);

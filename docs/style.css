@@ -6,42 +6,62 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     width: 100vw;
     height: 100vh;
     font-family: "Itim", cursive;
     background-color: mistyrose;
+
+    user-select: none;
 }
+
 #score_display {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
+
 #score_header {
     font-size: 10vmin;
 }
+
 #score_counter {
     font-size: 5vmin;
 }
+
 @media (max-aspect-ratio: 1) {
+
     main,
     #score_display {
         flex-direction: column;
     }
+
     #score_header,
     #score_counter {
         writing-mode: sideways-lr;
     }
+
+    #card_display {
+        height: 100vmin;
+    }
 }
 
 @media (min-aspect-ratio: 1) {
+
     main,
     #score_display {
         flex-direction: row;
     }
+
     #score_header,
     #score_counter {
         writing-mode: vertical-rl;
         text-orientation: upright;
+    }
+
+    #card_display {
+        width: 100vmin;
     }
 }
 
@@ -50,14 +70,17 @@ main {
     gap: 1vmin;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    width: 100vmin;
-    height: 100vmin;
+    /* flex: 1 1 auto; */
+    /* height: 90vmin; */
+    aspect-ratio: 1;
+    /* height: 100vmin; */
+    /* width: 100%;
+    height: 100%; */
     position: relative;
     transform: scale(0.95);
 }
 
 .card_item {
-    user-select: none;
     perspective: 25vw;
 }
 
@@ -88,19 +111,19 @@ main {
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    display: flex;
     /* align-items: center; */
     /* justify-content: center; */
+    display: flex;
     border-radius: 1vmin;
     overflow: hidden;
 }
 
-.card_face > img {
+.card_face>img {
     width: 100%;
     height: 100%;
 }
 
-.card_item[animated] > .card_content {
+.card_item[animated]>.card_content {
     box-shadow: 0 0 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
 }
 
@@ -111,10 +134,120 @@ main {
     transform: rotateY(180deg);
 }
 
-.card_back > img {
-    transform: scale(0.75);
+.card_back>img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* max-width: 100%; */
+    /* max-height: 100%; */
+    /* object-fit: contain; */
+    /* transform: scale(0.75); */
 }
 
-.card_item[up] > .card_content {
+.card_item[up]>.card_content {
     transform: rotateY(180deg);
+}
+
+#button_display {
+    display: flex;
+}
+
+#play_wrapper,
+#intermission,
+#reset_wrapper {
+    all: unset;
+
+    width: 10vmin;
+    aspect-ratio: 1;
+
+    position: relative;
+    /* position: absolute; */
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: black;
+
+    cursor: pointer;
+}
+
+#play {
+    position: absolute;
+    width: 0;
+    height: 0;
+
+    border-left: 6vmin white solid;
+    border-top: 3vmin transparent solid;
+    border-bottom: 3vmin transparent solid;
+
+    transform: translateX(0.5vmin);
+    transform-origin: calc(50% - 6vmin) 50%;
+}
+
+#intermission {
+    cursor: default;
+}
+
+#intermission_circle {
+    width: 25%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: white;
+}
+
+#reset_wrapper[animated] {
+    transform: rotate(360deg);
+    transition: all 0.5s ease;
+    cursor: default;
+}
+
+#reset {
+    aspect-ratio: 1;
+    width: 50%;
+
+    position: absolute;
+
+    border-radius: 50%;
+    border: 1vmin white solid;
+    border-right: 1vmin transparent solid;
+
+    background-color: black;
+}
+
+#play_wrapper:hover>#play,
+#reset_wrapper:hover>#reset {
+    transform: scale(1.1);
+    transition: all 0.5s ease;
+}
+
+
+#reset_arrow_wrapper {
+    position: absolute;
+    width: 2vmin;
+    height: 100%;
+    top: 0;
+    left: calc(50% - 1vmin);
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: rotate(45deg);
+}
+
+#reset_arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+
+    top: -1.5vmin;
+    left: 1vmin;
+
+    border-left: 2vmin white solid;
+    border-top: 1vmin transparent solid;
+    border-bottom: 1vmin transparent solid;
 }
