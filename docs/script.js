@@ -23,9 +23,8 @@ class Card {
             let cardDiv = card.element;
             cardDiv.classList = "card_item";
             cardDiv.id = `${name}${j}`;
-            setCardClick(card, true);
+            // setCardClick(card, true);
             cardDiv.toggleAttribute("down");
-            // cardDiv.toggleAttribute("up");
             let cardContent = document.createElement("div");
             cardContent.classList = "card_content";
 
@@ -78,6 +77,13 @@ const viewTime = 1000;
 
 function init() {
     console.log("init");
+
+    clearTimeout(cardAnimateTimeout);
+    clearTimeout(startShowTimeout);
+    clearTimeout(startHideTimeout);
+    clearTimeout(resetEndTimeout);
+    clearTimeout(selectPairHideTimeout);
+
     score = 0;
 
     cards = [];
@@ -90,16 +96,13 @@ function init() {
     shuffle();
     populateMain();
 
-    playWrapper.style = "";
-    playWrapper.onclick = start;
-    intermission.style = "display:none";
-    resetWrapper.style = "display:none";
-    resetWrapper.onclick = "";
+    buttonPlay();
 
     selected = [null, null];
     currentIndex = 0;
 }
 
+let cardAnimateTimeout;
 function flipCard(card) {
     let cardDiv = card.element;
     let current, toggled;
@@ -111,7 +114,7 @@ function flipCard(card) {
     cardDiv.removeAttribute(current);
     cardDiv.toggleAttribute("animated");
     setCardClick(card, false);
-    setTimeout(() => {
+    cardAnimateTimeout = setTimeout(() => {
         cardDiv.toggleAttribute("animated");
     }, 1000);
     cardDiv.setAttribute(toggled, "");
@@ -135,11 +138,13 @@ function populateMain() {
     displayScore(0);
     populateDisplay();
 }
+
 function displayScore(score) {
-    scoreCounter.innerHTML = `${score} PTS`;
+    scoreCounter.innerHTML = `<p>${score} PTS</p>`;
 }
+
 function populateDisplay() {
-    for (const card of cards) {
+    cards.forEach((card) => {
         const cardDiv = card.element;
         cardDiv.getElementsByClassName(
             "card_face"
@@ -148,23 +153,43 @@ function populateDisplay() {
             "card_back"
         )[0].id = `${cardDiv.id} BACK`;
         cardDisplay.appendChild(cardDiv);
-    }
+    });
 }
 
-function start() {
+function buttonPlay() {
+    playWrapper.style = "";
+    playWrapper.onclick = start;
+    resetWrapper.style = "display:none";
+    resetWrapper.onclick = "";
+    intermission.style = "display:none";
+}
+
+function buttonReset() {
+    resetWrapper.style = "";
+    resetWrapper.onclick = reset;
     playWrapper.style = "display:none";
+    playWrapper.onclick = "";
+    intermission.style = "display:none";
+}
+
+function buttonIntermission() {
     intermission.style = "";
-    for (const card of cards) {
+    playWrapper.style = "display:none";
+    resetWrapper.style = "display:none";
+}
+
+let startShowTimeout, startHideTimeout;
+function start() {
+    buttonIntermission();
+    cards.forEach((card) => {
         flipCard(card);
-    }
-    setTimeout(() => {
-        for (const card of cards) {
+    });
+    startShowTimeout = setTimeout(() => {
+        cards.forEach((card) => {
             flipCard(card);
-        }
-        setTimeout(() => {
-            resetWrapper.style = "";
-            resetWrapper.onclick = reset;
-            intermission.style = "display:none";
+        });
+        startHideTimeout = setTimeout(() => {
+            buttonReset();
             cards.forEach((card) => {
                 setCardClick(card, true);
             });
@@ -172,16 +197,21 @@ function start() {
     }, viewTime + 1000);
 }
 
+let resetEndTimeout;
 function reset() {
     resetWrapper.toggleAttribute("animated");
-
-    setTimeout(() => {
+    cards.forEach((card) => {
+        if (card.element.hasAttribute("up")) {
+            flipCard(card);
+        }
+    });
+    resetEndTimeout = setTimeout(() => {
         resetWrapper.toggleAttribute("animated");
-        // for (const card of cards) {}
         init();
-    }, 500);
+    }, 1500);
 }
 
+let selectPairHideTimeout;
 function selectCard(card) {
     displayScore(++score);
 
@@ -197,17 +227,18 @@ function selectCard(card) {
 
     if (selected[1].match === selected[0]) {
         console.log("MATCH");
-        cards = cards.filter((item) => {
-            return !selected.includes(item);
-        });
-        console.log(cards.length);
-        cards.forEach((card) => {
-            setCardClick(card, true);
-        });
+        cards
+            .filter((card) => {
+                return !selected.includes(card);
+            })
+            .forEach((card) => {
+                setCardClick(card, true);
+            });
         selected = [null, null];
         currentIndex = 0;
     } else {
-        setTimeout(() => {
+        buttonIntermission();
+        selectPairHideTimeout = setTimeout(() => {
             flipCard(selected[0]);
             flipCard(selected[1]);
             selected = [null, null];
@@ -215,6 +246,7 @@ function selectCard(card) {
             cards.forEach((card) => {
                 setCardClick(card, true);
             });
+            buttonReset();
         }, 1250);
     }
 }
