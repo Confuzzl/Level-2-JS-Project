@@ -58,6 +58,11 @@ function shuffle() {
     }
 }
 
+const help = document.getElementById("help");
+
+const winMessage = document.getElementById("win_message");
+const winAudio = new Audio("assets/win.mp3");
+
 const scoreDisplay = document.getElementById("score_display");
 const scoreHeader = document.getElementById("score_header");
 const scoreCounter = document.getElementById("score_counter");
@@ -72,6 +77,7 @@ let cards;
 const cardDisplay = document.getElementById("card_display");
 let selected;
 let currentIndex;
+let remaining = 16;
 
 const viewTime = 1000;
 
@@ -85,6 +91,7 @@ function init() {
     clearTimeout(selectPairHideTimeout);
 
     score = 0;
+    remaining = 16;
 
     cards = [];
     for (let i = 0; i < 8; i++) {
@@ -95,8 +102,6 @@ function init() {
 
     shuffle();
     populateMain();
-
-    buttonPlay();
 
     selected = [null, null];
     currentIndex = 0;
@@ -135,8 +140,10 @@ function setCardClick(card, bool) {
 
 function populateMain() {
     cardDisplay.innerHTML = "";
+    // winMessage.style = "display:none";
     displayScore(0);
     populateDisplay();
+    buttonPlay();
 }
 
 function displayScore(score) {
@@ -200,15 +207,21 @@ function start() {
 let resetEndTimeout;
 function reset() {
     resetWrapper.toggleAttribute("animated");
+    let flippedCards = false;
     cards.forEach((card) => {
         if (card.element.hasAttribute("up")) {
             flipCard(card);
+            flippedCards = true;
         }
     });
-    resetEndTimeout = setTimeout(() => {
-        resetWrapper.toggleAttribute("animated");
-        init();
-    }, 1500);
+    resetEndTimeout = setTimeout(
+        () => {
+            resetWrapper.toggleAttribute("animated");
+            init();
+        },
+        flippedCards ? 1500 : 500
+    );
+    if (remaining == 0) hideWinMessage();
 }
 
 let selectPairHideTimeout;
@@ -236,6 +249,8 @@ function selectCard(card) {
             });
         selected = [null, null];
         currentIndex = 0;
+        remaining -= 2;
+        if (remaining == 0) setTimeout(showWinMessage, 1000);
     } else {
         buttonIntermission();
         selectPairHideTimeout = setTimeout(() => {
@@ -249,4 +264,17 @@ function selectCard(card) {
             buttonReset();
         }, 1250);
     }
+}
+
+function showWinMessage() {
+    winMessage.toggleAttribute("show");
+    winAudio.play();
+}
+
+function hideWinMessage() {
+    winMessage.toggleAttribute("show");
+    winMessage.toggleAttribute("hide");
+    setTimeout(() => {
+        winMessage.toggleAttribute("hide");
+    }, 250);
 }
